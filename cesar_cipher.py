@@ -1,52 +1,92 @@
 import re
-quit = False # default value
+from pyfiglet import figlet_format
 
-def shiftAlgo(case, s, c):
-	f = ''
-	if case == "lower":
-		# 97 = a
-		f += chr(97 + (ord(c) - 97 + s)%26)
-	elif case == "upper":
-		# 65 = A
-		f += chr(65 + (ord(c) - 65 + s)%26)
-	return f
+quit = False
 
-def cesarcipher(a, shift, ap):
+print(figlet_format("Cesar Cipher"))
+
+def decodeCesarCipher(cipher, key):
+	result = ''
+	temp = ''
+	for c in cipher:
+		if c.isalpha():
+			if c.islower():
+				if ((ord(c) - 97 - key) < 0):
+					temp = 97 + ((ord(c) - 97 - key + 26) % 26) 
+				else:
+					temp = 97 + ((ord(c) - 97 - key) % 26) 
+				result += chr(temp)
+			elif c.isupper():
+				if ((ord(c) - 65 - key) < 0):
+					temp = 65 + ((ord(c) - 65 - key + 26) % 26) 
+				else:
+					temp = 65 + ((ord(c) - 65 - key) % 26) 
+				result += chr(temp)
+		else:
+			result += c
+	return result
+	
+# Encode
+def cesarcipher(a, s):
+	# a = plaintext
+	# s = shift
+	Alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	final = ''
-	for i in range(len(a)):
+	for i in a:
 		# get a single character from cipher
-		char = a[i:i+1]
 		# check if the "cipher" is aphabet or not
-		if char.isalpha() or char == ' ':
+		if i.isalpha() or i == ' ':
 			# lower and upper cipher text have diffrent algorithm
-			if char.islower():
-				final += shiftAlgo("lower", shift, char)
-			elif char.isupper():
-				final += shiftAlgo("upper", shift, char)
+			if i.islower():
+				final += chr(97 + (ord(i) - 97 + s)%26)
+			elif i.isupper():
+				final += chr(65 + (ord(i) - 65 + s)%26)
 			else:
 				final += ' '
 		else:
-			print("\n{} is not in expected list:\n{}".format(char, ap))
-			global quit
-			quit = True
+			print("\n{} is not in expected list:\n{}".format(i, Alphabets))
 	return final
 
-
-Alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-plaintext = input("Caesar code plain text: ") # get plaintext
-plaintext = re.sub(r"[\n\t\s]", " ", plaintext) # replace spaces
-automode = str(input("Test all possible shifts (y/n): ")) # brute force?
-
-if automode == 'y':
-	for i in range(1, 26 + 1):
-		print("+{}".format(i), cesarcipher(plaintext, i, Alphabets))
-		if quit:
-			break
-elif automode == 'n':
+# Start Enc Function
+def startEncProcess():
+	plaintext = input("Caesar code plain text: ")
+	plaintext = re.sub(r"[\n\t\s]", " ", plaintext)
 	shift = int(input("The Shift (number): "))
 	while shift > 26 or shift < 0:
 		shift = int(input("Please try again: "))
+	enctxt = cesarcipher(plaintext, shift)
+	print("\nThe encoded message is:\n" + enctxt)
 
-	print("\n",cesarcipher(plaintext, shift, Alphabets))
-else:
-	print("Please try again")
+def startDecProcess():
+	ciphertext = input("Caesar shifted ciphertext: ")
+	ciphertext = re.sub(r"[\n\t\s]", " ", ciphertext)
+	automode = str(input("Test all possible shifts (y/n): "))
+	if automode == 'y':
+		for i in range(1, 26 + 1):
+			print("+{}".format(i),decodeCesarCipher(ciphertext, i))
+			if quit:
+				break;
+	elif automode == 'n':
+		key = int(input("Enter you key/shift (number): "))
+		while key > 26 or key < 0:
+			key = int(input("Please try again: "))
+		print("\n",decodeCesarCipher(ciphertext, key))
+	else:
+		print("Please try again!")
+
+
+	
+
+running = True
+while running:
+	option = str(input("\nChoose (e) for encrypt and (d) for decrypt: ")).lower()
+	if option == "e":
+		print("\n", "-" * 20, "Encryption", "-"*20, "\n")
+		startEncProcess()
+		running = False
+	elif option == "d":
+		print("\n", "-" * 20, "Decrypt", "-"*20, "\n")
+		startDecProcess()
+		running = False
+	else:
+		print("\n\tPlease try again")
