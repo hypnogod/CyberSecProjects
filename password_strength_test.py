@@ -10,7 +10,7 @@ def prCyan(skk): print("\033[96m\n","-"*20,"{}" .format(skk), "-"*20, "\n\033[00
 
 prCyan("Password Strength Test")
 
-user_pass = str(input("\033[93mCheck you password: \033[00m"))
+user_pass = str(input("\033[93mCheck your password: \033[00m"))
 
 score = 0
 
