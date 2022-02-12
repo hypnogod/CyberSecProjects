@@ -2,6 +2,13 @@
 
 import random
 
+# https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
+
+OKBLUE = '\033[94m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+ENDC = '\033[0m'
+
 letters = "abcdefghijklmnopqrstuvwxyz"
 numbers = "123456789"
 symbols = "$#%^&*(){}[];/!:;''\""
@@ -9,9 +16,9 @@ symbols = "$#%^&*(){}[];/!:;''\""
 passLen = 0
 while passLen < 8:
 	try:
-		passLen = int(input("password length (min=8): "))
+		passLen = int(input(OKBLUE + "Password length (min=8):" + ENDC + " "))
 	except:
-		print("Please input only numbers")
+		print(WARNING + "\tPlease input only numbers\n" + ENDC)
 
 n = 0
 password = ''
@@ -27,4 +34,5 @@ while n < passLen:
 		password += let
 	n += 1
 
-print(password)
+
+print("\n" + OKGREEN + password + ENDC)
